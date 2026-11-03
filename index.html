@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALEX ✦ @shar.molvis — video editor</title>
+<meta name="description" content="Алекс (@shar.molvis) — видеоэдитор. Вертикальные эдиты 9:16, АМВ, немного магии. This is my life.">
+<meta property="og:title" content="ALEX — эдиты 9:16 ✦ this is my life">
+<meta property="og:description" content="Вертикальные эдиты, АМВ и немного магии. TikTok @shar.molvis • Telegram @trQanlir">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307060b'/%3E%3Cpath d='M24 17l24 15-24 15z' fill='%23ff2d78'/%3E%3C/svg%3E">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:   '#07060b',
+        panel: '#0d0c14',
+        edge:  '#1c1a29',
+        neon:  '#8b5cf6',
+        cy:    '#22d3ee',
+        pk:    '#ff2d78',
+        acid:  '#d4ff3f'
+      },
+      fontFamily: {
+        display: ['Unbounded', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+        body: ['Manrope', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --pk:#ff2d78; --cy:#22d3ee; --neon:#8b5cf6; --acid:#d4ff3f; }
+  html{ scroll-behavior:smooth; }
+  body{ background:#07060b; }
+  ::selection{ background:var(--pk); color:#fff; }
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:#07060b; }
+  ::-webkit-scrollbar-thumb{ background:#1c1a29; border-radius:8px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#8b5cf6; }
+
+  /* ---------- overlays: progress / noise / scanlines ---------- */
+  #progress{ position:fixed; top:0; left:0; height:3px; width:0; z-index:70;
+    background:linear-gradient(90deg,var(--pk),var(--neon),var(--cy));
+    box-shadow:0 0 12px rgba(255,45,120,.6); }
+  .fx-noise{ position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .fx-scan{ position:fixed; inset:0; z-index:59; pointer-events:none; opacity:.35;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px); }
+
+  /* ---------- glitch headline ---------- */
+  .glitch{ position:relative; display:inline-block; }
+  .glitch::before,.glitch::after{ content:attr(data-text); position:absolute; inset:0; pointer-events:none; }
+  .glitch::before{ color:var(--cy); animation:gl1 3.4s infinite steps(1); }
+  .glitch::after{ color:var(--pk); animation:gl2 2.8s infinite steps(1); }
+  @keyframes gl1{
+    0%,86%{ clip-path:inset(100% 0 0 0); transform:none; }
+    87%{ clip-path:inset(12% 0 58% 0); transform:translate(-4px,1px); }
+    90%{ clip-path:inset(62% 0 6% 0);  transform:translate(3px,-2px); }
+    93%{ clip-path:inset(38% 0 34% 0); transform:translate(-2px,2px); }
+    95%,100%{ clip-path:inset(100% 0 0 0); transform:none; }
+  }
+  @keyframes gl2{
+    0%,80%{ clip-path:inset(100% 0 0 0); transform:none; }
+    81%{ clip-path:inset(48% 0 22% 0); transform:translate(3px,1px); }
+    84%{ clip-path:inset(8% 0 70% 0);  transform:translate(-3px,-1px); }
+    87%{ clip-path:inset(70% 0 4% 0);  transform:translate(2px,2px); }
+    89%,100%{ clip-path:inset(100% 0 0 0); transform:none; }
+  }
+
+  /* ---------- REC / blink ---------- */
+  .rec-dot{ animation:blink 1.4s steps(1) infinite; }
+  @keyframes blink{ 0%,60%{opacity:1} 61%,100%{opacity:.15} }
+
+  /* ---------- marquee ---------- */
+  .marquee{ overflow:hidden; white-space:nowrap;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+            mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
+  .marquee-track{ display:inline-flex; animation:marq 32s linear infinite; }
+  .marquee:hover .marquee-track{ animation-play-state:paused; }
+  @keyframes marq{ to{ transform:translateX(-50%); } }
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(26px);
+    transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal.on{ opacity:1; transform:none; }
+
+  /* ---------- fandom stickers ---------- */
+  .fan{ --c:#8b5cf6; --rot:0deg; transform:rotate(var(--rot));
+    transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease; }
+  .fan:hover{ transform:rotate(0deg) translateY(-6px) scale(1.05);
+    border-color:var(--c); box-shadow:0 10px 34px -10px var(--c); z-index:2; }
+  @keyframes pop{
+    from{ opacity:0; transform:rotate(var(--rot)) scale(.7) translateY(12px); }
+    to{   opacity:1; transform:rotate(var(--rot)) scale(1) translateY(0); }
+  }
+  .pop{ animation:pop .5s cubic-bezier(.2,.7,.2,1) backwards; }
+  #fandomGrid .fan:nth-child(odd){ --rot:-1.3deg; }
+  #fandomGrid .fan:nth-child(even){ --rot:1.2deg; }
+
+  /* ---------- timeline ruler + playhead ---------- */
+  .ruler{ background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.28) 0 2px, transparent 2px 24px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.14) 0 1px, transparent 1px 6px);
+    background-size:100% 12px, 100% 6px; background-repeat:no-repeat; background-position:bottom left; }
+  .playhead{ position:absolute; top:-8px; bottom:0; width:2px; left:0;
+    background:var(--pk); box-shadow:0 0 10px var(--pk); animation:sweep 14s linear infinite; }
+  @keyframes sweep{ to{ left:100%; } }
+
+  /* ---------- clip hover scanline ---------- */
+  .sweep{ position:absolute; left:0; right:0; top:-45%; height:38%; opacity:0;
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,.28),transparent); }
+  .clip-card:hover .sweep{ opacity:1; animation:sweepdown .8s ease; }
+  @keyframes sweepdown{ from{ top:-45%; } to{ top:110%; } }
+
+  /* ---------- clip backgrounds ---------- */
+  .bg-jjk{ background:linear-gradient(165deg,#1b1035 0%,#07060b 70%); }
+  .bg-nrg{ background:linear-gradient(165deg,#082f49 0%,#07060b 70%); }
+  .bg-kks{ background:linear-gradient(165deg,#500724 0%,#07060b 70%); }
+  .bg-tlu{ background:linear-gradient(165deg,#1a2e05 0%,#07060b 70%); }
+  .bg-hp{  background:linear-gradient(165deg,#451a03 0%,#07060b 70%); }
+  .bg-httyd{ background:linear-gradient(165deg,#064e3b 0%,#07060b 70%); }
+
+  /* ---------- button shine ---------- */
+  .btn-shine{ position:relative; overflow:hidden; }
+  .btn-shine::after{ content:""; position:absolute; top:0; left:-60%; width:40%; height:100%;
+    transform:skewX(-20deg);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+    transition:left .6s ease; }
+  .btn-shine:hover::after{ left:120%; }
+
+  /* ---------- tilt ---------- */
+  .persp{ perspective:900px; }
+  .clip-card{ transition:transform .15s ease-out, border-color .25s ease, box-shadow .25s ease; transform-style:preserve-3d; }
+  .clip-card:hover{ border-color:rgba(255,255,255,.35); box-shadow:0 18px 50px -18px rgba(139,92,246,.5); }
+
+  /* ---------- easter-egg: full page glitch ---------- */
+  body.rip{ animation:rip .5s steps(2); }
+  @keyframes rip{ 25%{filter:hue-rotate(90deg) saturate(2);} 50%{filter:invert(1);} 75%{filter:hue-rotate(-90deg);} }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none!important; transition:none!important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body class="bg-ink text-white font-body antialiased overflow-x-hidden">
+
+<div id="progress"></div>
+<div class="fx-noise"></div>
+<div class="fx-scan"></div>
+
+<!-- ================= TOP BAR ================= -->
+<header class="sticky top-0 z-40 border-b border-edge/70 bg-ink/80 backdrop-blur">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+    <button id="logo" class="flex items-center gap-2 font-mono text-xs sm:text-sm font-bold tracking-[.2em] text-white/90 hover:text-pk transition-colors select-none" title="не нажимай. или нажми">
+      <span class="text-pk">▶</span> SHAR<span class="text-white/30">.</span>MOLVIS
+    </button>
+    <nav class="hidden md:flex items-center gap-6 font-mono text-[11px] text-white/40">
+      <a href="#fandoms" class="hover:text-cy transition-colors">// fandoms</a>
+      <a href="#edits" class="hover:text-cy transition-colors">// edits</a>
+    </nav>
+    <div class="flex items-center gap-2 font-mono text-[11px] sm:text-xs">
+      <span class="rec-dot text-pk">●</span>
+      <span class="text-pk font-bold tracking-widest">REC</span>
+      <span id="timecode" class="text-white/70 tabular-nums">00:00:00:00</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6">
+
+  <!-- ================= HERO ================= -->
+  <section class="pt-12 md:pt-16 pb-12 grid md:grid-cols-[minmax(0,300px)_1fr] gap-10 md:gap-14 items-center">
+
+    <!-- avatar -->
+    <div class="reveal relative mx-auto w-full max-w-[290px] select-none" id="avatar">
+      <span class="absolute -top-3 -left-2 z-10 -rotate-6 font-mono text-[10px] font-bold border border-cy/60 text-cy rounded px-2 py-1 bg-ink/80 backdrop-blur">9:16</span>
+      <span class="absolute top-1/3 -right-4 z-10 rotate-3 font-mono text-[10px] font-bold border border-pk/60 text-pk rounded px-2 py-1 bg-ink/80 backdrop-blur">60 FPS</span>
+      <div class="relative aspect-[3/4] rounded-2xl border border-edge bg-panel overflow-hidden">
+        <!-- viewfinder corners -->
+        <span class="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-cy/80"></span>
+        <span class="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-cy/80"></span>
+        <span class="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-cy/80"></span>
+        <span class="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-cy/80"></span>
+        <!-- glow -->
+        <div class="absolute inset-0" style="background:radial-gradient(60% 45% at 50% 42%,rgba(139,92,246,.28),transparent 70%)"></div>
+        <!-- REC badge -->
+        <span class="absolute top-5 left-5 flex items-center gap-1.5 font-mono text-[10px] font-bold text-pk">
+          <span class="rec-dot">●</span> REC
+        </span>
+        <span class="absolute top-5 right-5 font-mono text-[10px] text-white/40">RAW</span>
+        <!-- monogram -->
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="glitch font-display font-black text-[110px] leading-none bg-gradient-to-br from-pk via-neon to-cy bg-clip-text text-transparent" data-text="A">A</span>
+        </div>
+        <!-- file bar -->
+        <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-5 py-2.5 bg-black/50 backdrop-blur font-mono text-[10px] text-white/60">
+          <span>avatar_final_v2.mov</span>
+          <span class="text-acid">00:16</span>
+        </div>
+      </div>
+      <!-- birthday sticker -->
+      <span class="absolute -bottom-4 -right-2 rotate-6 font-mono text-xs font-bold bg-acid text-black rounded-md px-3 py-1.5 shadow-lg shadow-acid/30">16.02 ♒</span>
+    </div>
+
+    <!-- intro -->
+    <div class="reveal text-center md:text-left" style="transition-delay:.12s">
+      <p class="font-mono text-[11px] sm:text-xs tracking-[.3em] text-cy">// vertical_video_editor</p>
+
+      <h1 class="mt-3 font-display font-black uppercase text-5xl sm:text-6xl md:text-7xl leading-none">
+        <span class="glitch" data-text="ALEX">ALEX</span>
+      </h1>
+
+      <p class="mt-4 font-mono text-xs sm:text-sm text-white/50">
+        <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="text-pk hover:text-cy transition-colors">@shar.molvis</a>
+        <span class="mx-2 text-white/20">•</span> эдиты <span class="text-white/20">•</span> амв <span class="text-white/20">•</span> тайтлы
+      </p>
+
+      <p class="mt-5 max-w-xl mx-auto md:mx-0 text-base sm:text-lg leading-relaxed text-white/70">
+        Монтирую вертикальные эдиты, где кадр бьёт под бит, а эмоция важнее перехода.
+        Тёмные тайтлы, уютные ромкомы и немного магии — всё это живёт в моём таймлайне.
+      </p>
+
+      <!-- motto -->
+      <div class="mt-7 border-l-2 border-pk pl-4 sm:pl-5 text-left inline-block">
+        <p class="font-display font-extrabold text-xl sm:text-2xl leading-tight">
+          THIS IS MY <span class="text-transparent bg-clip-text bg-gradient-to-r from-pk to-cy">LIFE</span>
+        </p>
+        <p class="mt-1 font-mono text-[11px] sm:text-xs text-white/45">𑀱ꤖ꤯᥉ ꤯᥉ 𐌌γ ꤈꤯каз</p>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+        <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener"
+           class="btn-shine w-full sm:w-auto group inline-flex items-center gap-3 rounded-xl bg-pk px-7 py-4 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_-8px_rgba(255,45,120,.65)]">
+          <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current" aria-hidden="true"><path d="M19.6 6.7a5.1 5.1 0 0 1-3.3-1.2 5.5 5.5 0 0 1-1.9-3.4h-3.5v13.4a2.6 2.6 0 1 1-1.9-2.5V9.2a6.1 6.1 0 0 0-1.9.3 6 6 0 1 0 5.4 8.4 5.9 5.9 0 0 0 .5-2.4V8.6a8.9 8.9 0 0 0 5.1 1.6V6.7z"/></svg>
+          <span class="flex flex-col items-start leading-tight">
+            <span>Смотреть эдиты</span>
+            <span class="font-mono text-[10px] font-normal text-white/75">tiktok — @shar.molvis</span>
+          </span>
+        </a>
+        <a href="https://t.me/trQanlir" target="_blank" rel="noopener"
+           class="btn-shine w-full sm:w-auto group inline-flex items-center gap-3 rounded-xl bg-[#229ED9] px-7 py-4 font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_-8px_rgba(34,158,217,.65)]">
+          <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current" aria-hidden="true"><path d="M23.9 3.2 21.3 21c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6L20.5 6c.4-.3-.1-.5-.6-.2L7.3 13.4l-4.4-1.4c-1-.3-1-.99.2-1.5L22.5 1.5c.8-.3 1.5.2 1.4 1.7z"/></svg>
+          <span class="flex flex-col items-start leading-tight">
+            <span>Заказать монтаж</span>
+            <span class="font-mono text-[10px] font-normal text-white/75">telegram — @trQanlir</span>
+          </span>
+        </a>
+      </div>
+
+      <!-- editor stats -->
+      <div class="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 font-mono text-[11px] text-white/35">
+        <span>format — <span class="text-white/70">9:16</span></span>
+        <span>fps — <span class="text-white/70">60</span></span>
+        <span>дедлайны — <span class="text-pk">горят</span></span>
+        <span>кофе — <span class="text-acid">∞</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FANDOM MARQUEE ================= -->
+  <div class="marquee border-y border-edge/70 py-3" aria-hidden="true">
+    <div class="marquee-track font-mono text-xs sm:text-sm text-white/40" id="fandomTicker"></div>
+  </div>
+
+  <!-- ================= FANDOMS ================= -->
+  <section id="fandoms" class="py-16 md:py-20">
+    <div class="reveal flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="font-mono text-[11px] tracking-[.3em] text-cy">// fandom_archive</p>
+        <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl">15 МИРОВ<span class="text-white/30">,</span></h2>
+        <p class="mt-2 text-white/50">из которых я состою</p>
+      </div>
+      <p class="font-mono text-xs text-white/35">нажми на категорию —<br class="sm:hidden"> включи фильтр трека</p>
+    </div>
+
+    <!-- filter chips -->
+    <div class="reveal mt-8 flex flex-wrap gap-2.5" style="transition-delay:.08s">
+      <button data-cat="all"       class="fchip font-mono text-[11px] font-bold rounded-lg px-4 py-2 border border-edge bg-panel text-white/70 transition-all hover:border-white/40 hover:text-white">✦ ВСЕ</button>
+      <button data-cat="dark"      class="fchip font-mono text-[11px] font-bold rounded-lg px-4 py-2 border border-edge bg-panel text-white/70 transition-all hover:border-pk/60 hover:text-white">🌑 DARK &amp; MYSTERY</button>
+      <button data-cat="cozy"      class="fchip font-mono text-[11px] font-bold rounded-lg px-4 py-2 border border-edge bg-panel text-white/70 transition-all hover:border-neon/60 hover:text-white">💗 COZY &amp; ROMANCE</button>
+      <button data-cat="games"     class="fchip font-mono text-[11px] font-bold rounded-lg px-4 py-2 border border-edge bg-panel text-white/70 transition-all hover:border-cy/60 hover:text-white">🎮 GAMES &amp; WORLDS</button>
+      <button data-cat="childhood" class="fchip font-mono text-[11px] font-bold rounded-lg px-4 py-2 border border-edge bg-panel text-white/70 transition-all hover:border-acid/60 hover:text-white">✨ CHILDHOOD</button>
+    </div>
+
+    <!-- sticker grid -->
+    <div id="fandomGrid" class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4"></div>
+  </section>
+
+  <!-- ================= EDITS ================= -->
+  <section id="edits" class="py-16 md:py-20">
+    <div class="reveal">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-mono text-[11px] tracking-[.3em] text-cy">// selected_edits</p>
+          <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl">СВЕЖИЕ <span class="text-transparent bg-clip-text bg-gradient-to-r from-pk to-cy">ЭДИТЫ</span></h2>
+          <p class="mt-2 text-white/50">вертикальный формат 9:16 — как и положено</p>
+        </div>
+        <p class="font-mono text-xs text-white/35">hover = превью<br class="sm:hidden"> клик = смотреть</p>
+      </div>
+      <!-- timeline ruler -->
+      <div class="ruler relative h-10 mt-8 border-b border-edge/80">
+        <span class="absolute left-0 -top-1 font-mono text-[9px] text-white/30">00:00</span>
+        <span class="absolute left-1/4 -top-1 font-mono text-[9px] text-white/30 hidden sm:block">00:07</span>
+        <span class="absolute left-1/2 -top-1 font-mono text-[9px] text-white/30 hidden sm:block">00:14</span>
+        <span class="absolute left-3/4 -top-1 font-mono text-[9px] text-white/30 hidden sm:block">00:21</span>
+        <span class="absolute right-0 -top-1 font-mono text-[9px] text-white/30">00:30</span>
+        <div class="playhead"></div>
+      </div>
+    </div>
+
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt>
+        <div class="bg-jjk aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_01.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:27</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(139,92,246,.6)] transition-transform duration-300 group-hover:scale-125">⛩️</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">магическая битва — падение</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 1.2M</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.06s">
+        <div class="bg-nrg aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_02.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:19</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(34,211,238,.6)] transition-transform duration-300 group-hover:scale-125">⚡</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">noragami — шторм ято</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 743K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.12s">
+        <div class="bg-kks aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_03.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:22</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(255,45,120,.6)] transition-transform duration-300 group-hover:scale-125">🌸</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">kamisama kiss — свадьба богов</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 512K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt>
+        <div class="bg-tlu aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_04.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:31</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(163,230,53,.6)] transition-transform duration-300 group-hover:scale-125">🍄</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">the last of us — месть элли</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 388K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.06s">
+        <div class="bg-hp aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_05.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:24</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(251,191,36,.6)] transition-transform duration-300 group-hover:scale-125">🪄</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">гарри поттер — конец детства</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 297K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.12s">
+        <div class="bg-httyd aspect-[9/16] relative">
+          <div class="sweep"></div>
+          <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_06.mp4</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:18</span>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(16,185,129,.6)] transition-transform duration-300 group-hover:scale-125">🐉</span>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">httyd — полёт над бергеном</p>
+            <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
+              <span>👁 284K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="w-14 h-14 rounded-full bg-white/90 text-black flex items-center justify-center text-xl scale-0 transition-transform duration-300 group-hover:scale-100 shadow-xl">▶</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <p class="reveal mt-5 font-mono text-[11px] text-white/30">* превью — заглушки; реальные эдиты живут в TikTok</p>
+
+    <div class="reveal mt-10 flex justify-center">
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener"
+         class="btn-shine group inline-flex items-center gap-3 rounded-xl border-2 border-pk/70 px-8 py-4 font-bold text-white transition-all duration-300 hover:bg-pk hover:-translate-y-1 hover:shadow-[0_12px_40px_-8px_rgba(255,45,120,.65)]">
+        ВСЕ ЭДИТЫ В TIKTOK
+        <span class="transition-transform group-hover:translate-x-1">→</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="border-t border-edge/70">
+  <div class="marquee py-6" aria-hidden="true">
+    <div class="marquee-track font-display font-black text-3xl sm:text-5xl tracking-tight">
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-pk via-neon to-cy">THIS IS MY LIFE ✦ ЭТО МОЯ ЖИЗНЬ ✦ </span>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-pk via-neon to-cy">THIS IS MY LIFE ✦ ЭТО МОЯ ЖИЗНЬ ✦ </span>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[11px] text-white/35">
+    <span>© 2026 ALEX — сделано с <span class="text-pk">♥</span> и 60 fps</span>
+    <span class="font-mono text-[11px] text-white/30">𑀱ꤖ꤯᥉ ꤯᥉ 𐌌γ ꤈꤯каз</span>
+    <span class="flex gap-4">
+      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="hover:text-pk transition-colors">shar.molvis</a>
+      <a href="https://t.me/trQanlir" target="_blank" rel="noopener" class="hover:text-cy transition-colors">trQanlir</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* ============ data ============ */
+const FANDOMS = [
+  { en:'Kamisama Kiss',            ru:'очень приятно, бог',      emoji:'🌸', cat:'cozy' },
+  { en:'Noragami',                 ru:'бездомный бог',          emoji:'⚡', cat:'dark' },
+  { en:'Kekkai Sensen',            ru:'фронт кровавой блокады',  emoji:'🩸', cat:'dark' },
+  { en:'Jujutsu Kaisen',           ru:'магическая битва',       emoji:'⛩️', cat:'dark' },
+  { en:'Death Note',               ru:'тетрадь смерти',         emoji:'📓', cat:'dark' },
+  { en:'Apothecary Diaries',       ru:'монолог фармацевта',     emoji:'💊', cat:'cozy' },
+  { en:'Horimiya',                 ru:'хоримия',                emoji:'💘', cat:'cozy' },
+  { en:'The Last of Us',           ru:'одни из нас',            emoji:'🍄', cat:'games' },
+  { en:'My Little Pony',           ru:'мой маленький пони',     emoji:'🌈', cat:'childhood' },
+  { en:'Sonic',                    ru:'соник',                  emoji:'🦔', cat:'games' },
+  { en:'Harry Potter',             ru:'гарри поттер',          emoji:'🪄', cat:'childhood' },
+  { en:'Angels of Death',          ru:'ангел кровопролития',    emoji:'🔪', cat:'dark' },
+  { en:'Murder Drones',            ru:'дроны-убийцы',           emoji:'🤖', cat:'dark' },
+  { en:'How to Train Your Dragon', ru:'как приручить дракона',  emoji:'🐉', cat:'games' },
+  { en:'Disney',                   ru:'дисней',                 emoji:'🏰', cat:'childhood' },
+];
+const CAT_COLOR = { dark:'#ff2d78', cozy:'#a78bfa', games:'#22d3ee', childhood:'#d4ff3f' };
+
+/* ============ fandom ticker (marquee) ============ */
+const ticker = document.getElementById('fandomTicker');
+const tickerHTML = FANDOMS.map(f => `<span class="mx-4">${f.emoji} ${f.en}</span><span class="text-white/15">✦</span>`).join('');
+ticker.innerHTML = `<span class="flex items-center">${tickerHTML}</span><span class="flex items-center" aria-hidden="true">${tickerHTML}</span>`;
+
+/* ============ fandom grid + filter ============ */
+const grid = document.getElementById('fandomGrid');
+function renderFandoms(cat = 'all') {
+  const list = cat === 'all' ? FANDOMS : FANDOMS.filter(f => f.cat === cat);
+  grid.innerHTML = list.map((f, i) => `
+    <div class="fan pop relative rounded-xl border border-edge bg-panel p-4 flex items-center gap-3 cursor-default"
+         style="--c:${CAT_COLOR[f.cat]}; animation-delay:${i * 45}ms">
+      <span class="text-2xl sm:text-3xl">${f.emoji}</span>
+      <span class="flex flex-col min-w-0">
+        <span class="font-bold text-sm truncate">${f.en}</span>
+        <span class="font-mono text-[10px] text-white/40 truncate">${f.ru}</span>
+      </span>
+      <span class="ml-auto w-1.5 h-1.5 rounded-full shrink-0" style="background:${CAT_COLOR[f.cat]}"></span>
+    </div>`).join('');
+}
+renderFandoms();
+
+document.querySelectorAll('.fchip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.fchip').forEach(c => {
+      c.classList.remove('bg-white', 'text-black', 'border-white');
+      c.classList.add('bg-panel', 'text-white/70', 'border-edge');
+    });
+    chip.classList.add('bg-white', 'text-black', 'border-white');
+    chip.classList.remove('bg-panel', 'text-white/70', 'border-edge');
+    renderFandoms(chip.dataset.cat);
+  });
+});
+
+/* ============ live timecode (HH:MM:SS:FF @ 24fps) ============ */
+const tcEl = document.getElementById('timecode');
+const pad = n => String(n).padStart(2, '0');
+setInterval(() => {
+  const d = new Date();
+  tcEl.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}:${pad(Math.floor(d.getMilliseconds() / (1000 / 24)))}`;
+}, 1000 / 24);
+
+/* ============ scroll progress ============ */
+const progress = document.getElementById('progress');
+addEventListener('scroll', () => {
+  const h = document.documentElement;
+  progress.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+}, { passive: true });
+
+/* ============ scroll reveal ============ */
+const io = new IntersectionObserver(entries => entries.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+}), { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ============ 3D tilt on clips (desktop only) ============ */
+if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      card.style.transform = `rotateY(${x * 9}deg) rotateX(${-y * 9}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+}
+
+/* ============ easter egg: logo / avatar glitch ============ */
+const rip = () => {
+  document.body.classList.add('rip');
+  setTimeout(() => document.body.classList.remove('rip'), 520);
+};
+document.getElementById('logo').addEventListener('click', rip);
+document.getElementById('avatar').addEventListener('click', rip);
+</script>
+</body>
+</html>
