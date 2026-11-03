@@ -126,6 +126,8 @@ tailwind.config = {
   .bg-tlu{ background:linear-gradient(165deg,#1a2e05 0%,#07060b 70%); }
   .bg-hp{  background:linear-gradient(165deg,#451a03 0%,#07060b 70%); }
   .bg-httyd{ background:linear-gradient(165deg,#064e3b 0%,#07060b 70%); }
+  .bg-aod{ background:linear-gradient(165deg,#3b0a0a 0%,#07060b 70%); }
+  .bg-md{ background:linear-gradient(165deg,#2a1a4a 0%,#07060b 70%); }
 
   /* ---------- button shine ---------- */
   .btn-shine{ position:relative; overflow:hidden; }
@@ -196,13 +198,19 @@ tailwind.config = {
           <span class="rec-dot">●</span> REC
         </span>
         <span class="absolute top-5 right-5 font-mono text-[10px] text-white/40">RAW</span>
-        <!-- monogram -->
+        <!-- monogram watermark -->
+        <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+          <span class="glitch font-display font-black text-[110px] leading-none text-white/5 select-none" data-text="A">A</span>
+        </div>
+        <!-- real tiktok avatar -->
         <div class="absolute inset-0 flex items-center justify-center">
-          <span class="glitch font-display font-black text-[110px] leading-none bg-gradient-to-br from-pk via-neon to-cy bg-clip-text text-transparent" data-text="A">A</span>
+          <img src="assets/avatar.jpg" alt="аватар Alex — @shar.molvis" width="100" height="100"
+               class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-cy/70 shadow-[0_0_38px_rgba(139,92,246,.55)] transition-transform duration-300 hover:scale-105"
+               onerror="this.style.display='none'">
         </div>
         <!-- file bar -->
         <div class="absolute bottom-0 inset-x-0 flex items-center justify-between px-5 py-2.5 bg-black/50 backdrop-blur font-mono text-[10px] text-white/60">
-          <span>avatar_final_v2.mov</span>
+          <span>shar_molvis_avatar.jpg</span>
           <span class="text-acid">00:16</span>
         </div>
       </div>
@@ -227,6 +235,8 @@ tailwind.config = {
         Монтирую вертикальные эдиты, где кадр бьёт под бит, а эмоция важнее перехода.
         Тёмные тайтлы, уютные ромкомы и немного магии — всё это живёт в моём таймлайне.
       </p>
+
+      <p class="mt-3 font-mono text-[11px] sm:text-xs text-white/40">「自分が誰かなんて、自分で決めるもんだ。」<span class="text-white/25"> — из шапки тиктока</span></p>
 
       <!-- motto -->
       <div class="mt-7 border-l-2 border-pk pl-4 sm:pl-5 text-left inline-block">
@@ -260,6 +270,7 @@ tailwind.config = {
       <div class="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 font-mono text-[11px] text-white/35">
         <span>format — <span class="text-white/70">9:16</span></span>
         <span>fps — <span class="text-white/70">60</span></span>
+        <span>❤ на тиктоке — <span class="text-pk">22.6K</span></span>
         <span>дедлайны — <span class="text-pk">горят</span></span>
         <span>кофе — <span class="text-acid">∞</span></span>
       </div>
@@ -320,20 +331,19 @@ tailwind.config = {
     <!-- clips grid -->
     <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt>
+      <a href="https://www.tiktok.com/@shar.molvis/video/7663198410694036750" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt >
         <div class="bg-jjk aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover1.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover1.jpg" alt="эдит: гето и лоулайт — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_01.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:27</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 112K</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(139,92,246,.6)] transition-transform duration-300 group-hover:scale-125">⛩️</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">магическая битва — падение</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">гето × лоулайт</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 1.2M</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#jjk #deathnote</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -342,20 +352,22 @@ tailwind.config = {
         </div>
       </a>
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.06s">
-        <div class="bg-nrg aspect-[9/16] relative">
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis/video/7698285177428069646" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt transition-delay:.06s>
+        <div class="bg-tlu aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover2.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover2.jpg" alt="эдит: элли уильямс — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_02.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:19</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 17.1K</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(34,211,238,.6)] transition-transform duration-300 group-hover:scale-125">⚡</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">noragami — шторм ято</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">элли уильямс 🫪</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 743K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#tlou #эллиуильямс</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -364,20 +376,22 @@ tailwind.config = {
         </div>
       </a>
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.12s">
-        <div class="bg-kks aspect-[9/16] relative">
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis/video/7702758010619317517" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt transition-delay:.12s>
+        <div class="bg-jjk aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover3.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover3.jpg" alt="эдит: маки зенин — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_03.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:22</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 519</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(255,45,120,.6)] transition-transform duration-300 group-hover:scale-125">🌸</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">kamisama kiss — свадьба богов</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">маки зенин</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 512K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#магическаябитва</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -386,20 +400,22 @@ tailwind.config = {
         </div>
       </a>
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt>
-        <div class="bg-tlu aspect-[9/16] relative">
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis/video/7694712655285701902" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt >
+        <div class="bg-aod aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover5.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover5.jpg" alt="эдит: зак фостер — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_04.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:31</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 294</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(163,230,53,.6)] transition-transform duration-300 group-hover:scale-125">🍄</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">the last of us — месть элли</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">зак фостер — раз•раз</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 388K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#ангелкровопролития</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -408,20 +424,22 @@ tailwind.config = {
         </div>
       </a>
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.06s">
-        <div class="bg-hp aspect-[9/16] relative">
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis/video/7699154305705708814" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt transition-delay:.06s>
+        <div class="bg-md aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover6.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover6.jpg" alt="эдит: дроны-убийцы — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_05.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:24</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 218</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(251,191,36,.6)] transition-transform duration-300 group-hover:scale-125">🪄</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">гарри поттер — конец детства</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">узи • эн • долл</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 297K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#дроныубийцы #glitch</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -430,20 +448,22 @@ tailwind.config = {
         </div>
       </a>
 
-      <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt style="transition-delay:.12s">
-        <div class="bg-httyd aspect-[9/16] relative">
+    <!-- clips grid -->
+    <div class="persp mt-10 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <a href="https://www.tiktok.com/@shar.molvis/video/7702905694718053645" target="_blank" rel="noopener" class="reveal clip-card group relative block rounded-2xl border border-edge bg-panel overflow-hidden" data-tilt transition-delay:.12s>
+        <div class="bg-tlu aspect-[9/16] relative">
+          <div class="absolute inset-0 scale-125 blur-2xl opacity-50 saturate-150" style="background-image:url('assets/cover4.jpg');background-size:cover;background-position:center"></div>
+          <img src="assets/cover4.jpg" alt="эдит: элли, тлоу — @shar.molvis" loading="lazy" class="absolute inset-0 w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.style.display='none'">
           <div class="sweep"></div>
           <div class="absolute top-3 inset-x-3 flex items-center justify-between font-mono text-[10px]">
             <span class="bg-black/50 backdrop-blur rounded px-2 py-1">clip_06.mp4</span>
-            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 00:18</span>
+            <span class="bg-black/50 backdrop-blur rounded px-2 py-1 text-acid">▶ 211</span>
           </div>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-6xl drop-shadow-[0_4px_20px_rgba(16,185,129,.6)] transition-transform duration-300 group-hover:scale-125">🐉</span>
-          </div>
-          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-10">
-            <p class="font-bold text-sm leading-tight">httyd — полёт над бергеном</p>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-10">
+            <p class="font-bold text-sm leading-tight">самый ужасный персонаж тлоу</p>
             <div class="mt-2 flex items-center justify-between font-mono text-[10px] text-white/60">
-              <span>👁 284K</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
+              <span>#tlou</span><span class="text-cy opacity-0 transition-opacity group-hover:opacity-100">смотреть →</span>
             </div>
           </div>
           <div class="absolute inset-0 flex items-center justify-center">
@@ -453,7 +473,7 @@ tailwind.config = {
       </a>
     </div>
 
-    <p class="reveal mt-5 font-mono text-[11px] text-white/30">* превью — заглушки; реальные эдиты живут в TikTok</p>
+    <p class="reveal mt-5 font-mono text-[11px] text-white/30">* превью и просмотры — реальные, из TikTok · обновлено 03.11.2026</p>
 
     <div class="reveal mt-10 flex justify-center">
       <a href="https://www.tiktok.com/@shar.molvis" target="_blank" rel="noopener"
